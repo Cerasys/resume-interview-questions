@@ -10,8 +10,7 @@ Process PDF files using React and Flask
 ### Server
 
 1. Navigate to the server directory using `cd backend`
-2a. Create a virtual environment on Mac and activate it using `python3 -m venv venv` and `source venv/bin/activate`
-2b. Create a virtual environment on Windows and activate it using `python -m venv venv` and `./venv/Scripts/activate`
+2. Create a virtual environment on Mac and activate it using `python3 -m venv venv` and `source venv/bin/activate` or Create a virtual environment on Windows and activate it using `python -m venv venv` and `./venv/Scripts/activate`
 3. Upgrade pip to the latest version using `pip install --upgrade pip`
 4. Install flask using `pip install flask`
 5. Install flask_cors using `pip install flask_cors`
@@ -31,3 +30,7 @@ Process PDF files using React and Flask
 2. Click the upload button
 3. Upload progress and spinner will be displayed
 4. The file will be uploaded and saved in the local directory `backend/app/Downloads`
+
+## References
+
+https://github.com/timleungtech/pdfprocessor
