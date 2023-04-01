@@ -1,0 +1,51 @@
+body {
+  background-color: #fcf5d287;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 5px;
+}
+.formInput {
+    padding: 10px;
+}
+.formButton {
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background-color: #eee;
+  cursor: pointer;
+}
+.formButton:hover {
+  background-color: #ddd;
+}
+
+.selectFile {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.success {
+  color: green;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadedFile {
+  padding-bottom: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  text-align: center; 
+}
