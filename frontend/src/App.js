@@ -1,192 +1,86 @@
 import React, { useState } from "react";
-import axios from "axios";
-import {
-  Box,
-  CircularProgress,
-  CircularProgressLabel,
-  Flex,
-  Input,
-  VStack,
-  Text,
-  Code,
-  Stack,
-} from "@chakra-ui/react";
+import PdfFileUpload from "./PdfFileUpload";
+import QuestionList from "./QuestionList";
+import "./App.css";
 
 function App() {
-  const [, setfileURL] = useState("");
-  const [selectedFile, setselectedFile] = useState(null);
-  const [uploadedFile, setuploadedFile] = useState({});
-  const [isUploading, setisUploading] = useState(false);
-  const [isFileUploaded, setisFileUploaded] = useState(false);
-  const [uploadProgress, setuploadProgress] = useState(0);
+  const [file1, setFile1] = useState(null);
+  const [file2, setFile2] = useState(null);
+  const [questions, setQuestions] = useState([]);
 
-  let uploadInput = React.createRef();
-
-  // Track selected file before the upload
-  const handleSelectFile = (e) => {
-    const selectedFileList = [];
-    for (let i = 0; i < e.target.files.length; i++) {
-      selectedFileList.push(e.target.files.item(i));
+  const handleSubmit = () => {
+    if (!file1) {
+      alert("Please select both PDF files before submitting.");
+      return;
     }
-    setselectedFile(selectedFileList);
+
+    const formData = new FormData();
+    formData.append("file1", file1);
+    // formData.append("file2", file2);
+
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert("Files uploaded successfully!");
+        // You can handle the server response here
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+        alert("Error uploading files. Please try again.");
+      });
+
+    // Simulate receiving questions from the backend (replace with actual API call)
+    const receivedQuestions = [
+      "Question 1: What is your experience with React?",
+      "Question 2: Explain the difference between var, let, and const in JavaScript.",
+      // Add more questions as needed
+    ];
+
+    setQuestions(receivedQuestions);
   };
 
-  // Upload file to server
-  const handleUploadFile = async (ev) => {
-    ev.preventDefault();
-
-    setisUploading(true);
-    const data = new FormData();
-    // Append the file to the request body
-    for (let i = 0; i < uploadInput.files.length; i++) {
-      data.append("file", uploadInput.files[i], uploadInput.files[i].name);
+  const handleFile1Change = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      setFile1(selectedFile);
+    } else {
+      alert("Please select a valid PDF file for File 1.");
     }
+  };
 
-    try {
-      const config = {
-        onUploadProgress: (progressEvent) => {
-          const { loaded, total } = progressEvent;
-          setuploadProgress(Math.round((loaded / total) * 100));
-        },
-      };
-      const response = await axios.post(
-        "http://localhost:5000/upload",
-        data,
-        config
-      );
-      const body = response.data;
-      console.log(body);
-      setfileURL(`http://localhost:5000/${body.filename}`);
-      if (response.status === 200) {
-        setisFileUploaded(true); // flag to show the uploaded file
-        setisUploading(false);
-        setuploadedFile(selectedFile); // set the uploaded file to show the name
+  const handleFile2Change = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.type === "application/pdf") {
+        setFile2(selectedFile);
+      } else {
+        alert("Please select a valid PDF file for File 2.");
       }
-    } catch (error) {
-      console.error(error);
-      setisUploading(false);
+    } else {
+      // If no file is selected for the second input, set file2 to null
+      setFile2(null);
     }
   };
 
   return (
-    <Flex
-      align="center"
-      direction="column"
-      px={20}
-      bg={"#444444"}
-      minH={"100vh"}
-    >
-      <Stack
-        spacing={4}
-        align="center"
-        bg={"#F2F2F2"}
-        p={20}
-        my={20}
-        borderRadius={20}
-        minH={"90vh"}
-      >
-        <Box w={500} textAlign="center" px={10}>
-          <h1>LPQ PDF Processor</h1>
-          <h3>By: <a href='mailto:timleungtech@gmail.com'>Tim Leung</a></h3>
-          <Text fontWeight="bold" color="gray.700">
-            This is a file processing web app created with React, Python, and Flask to upload PDF files. 
-            It parses text in the PDF, retrieves necessary strings of each page, and sorts the splitted pages based on the strings. 
-            Strings are matched with dictionaries to paint output strings on canvases. 
-            Output file is then saved locally to the server and user is prompted to download.
-          </Text>
-        </Box>
-        {/* Upload file form */}
-        <form onSubmit={handleUploadFile}>
-          <Flex justify="center" align="center" direction="column">
-            <label
-              htmlFor="file"
-              style={{
-                cursor: "pointer",
-                padding: 10,
-                marginBottom: 20,
-                border: "1px solid #000",
-                borderRadius: 10,
-                background: "#698DAF",
-                color: "white",
-              }}
-            >
-              Select file to upload
-              <Input
-                id="file"
-                type="file"
-                multiple
-                ref={(ref) => {
-                  uploadInput = ref;
-                }}
-                onChange={handleSelectFile}
-                style={{ display: "none" }}
-              />
-            </label>
-            <VStack bg="azure" p={30} borderRadius={20}>
-              <Text fontWeight="bold">Selected file</Text>
-              <Flex pb={20} direction="column">
-                {selectedFile &&
-                  selectedFile.map((item, index) => {
-                    return (
-                      <Text key={index}>
-                        {/* <b>{index + 1}. </b> */}
-                        {item.name}
-                      </Text>
-                    );
-                  })}
-              </Flex>
-              <Box
-                as="button"
-                type="submit"
-                disabled={selectedFile ? false : true}
-                p={15}
-                textAlign="center"
-                fontWeight={600}
-                border="1px solid #000"
-                borderRadius={10}
-                bg={"#698DAF"}
-                color={"white"}
-                cursor="pointer"
-              >
-                Upload
-              </Box>
-            </VStack>
-          </Flex>
-        </form>
-        {/* Show the upload progress */}
-        {isUploading && (
-          <>
-            <CircularProgress value={uploadProgress} thickness="12px">
-              <CircularProgressLabel>{uploadProgress}%</CircularProgressLabel>
-            </CircularProgress>
-          </>
-        )}
-        {/* Show the success message and file names after upload */}
-        {isFileUploaded && (
-          <>
-            <Flex justify="center" align="center" direction="column">
-              <Box p={10} textAlign="center" color={"green"}>
-                <h3>File uploaded successfully</h3>
-              </Box>
-            </Flex>
-            <VStack bg="azure" p={30} borderRadius={20}>
-              <Text fontWeight="bold">Uploaded file</Text>
-              <Flex pb={20} direction="column">
-                {uploadedFile &&
-                  uploadedFile.map((item, index) => {
-                    return (
-                      <Text key={index}>
-                        {/* <b>{index + 1}. </b> */}
-                        {item.name}
-                      </Text>
-                    );
-                  })}
-              </Flex>
-            </VStack>
-          </>
-        )}
-      </Stack>
-    </Flex>
+    <div className="App">
+      <h1>Persona AI Interview Question Builder</h1>
+      <PdfFileUpload
+        file1={file1}
+        file2={file2}
+        handleFile1Change={handleFile1Change}
+        handleFile2Change={handleFile2Change}
+        handleSubmit={handleSubmit} // Pass the handleSubmit function
+      />
+      {file1 && <p>File 1: {file1.name}</p>}
+      {file2 && <p>File 2: {file2.name}</p>}
+
+      {/* Render the QuestionList component */}
+      {questions.length > 0 && <QuestionList questions={questions} />}
+    </div>
   );
 }
 
