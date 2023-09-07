@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PDF-Processor-React-Flask
 
 Process PDF files using React and Flask
@@ -34,3 +35,7 @@ Process PDF files using React and Flask
 ## References
 
 https://github.com/timleungtech/pdfprocessor
+=======
+# resume-interview-questions
+Take in a resume and generate a list of personalized interview questions.
+>>>>>>> 46a31a0bd132ad2f6f039744cae1369cd4d00d31
