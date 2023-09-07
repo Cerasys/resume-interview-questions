@@ -1,0 +1,27 @@
+/* QuestionList.css */
+
+.question-list-container {
+    max-width: 400px;
+    /* Set a maximum width for the container */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.question-list {
+    list-style: none;
+    padding: 0;
+}
+
+.question-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #ccc;
+    /* Add a border between questions */
+}
+
+.question-list li:last-child {
+    border-bottom: none;
+    /* Remove the border from the last question */
+}
